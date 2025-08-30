@@ -20,7 +20,13 @@ export default async function handler(req, res) {
       }),
     });
     const data = await tgRes.json();
-    res.status(200).json(data);
+    // Возвращаем ответ Telegram (например, сообщение, которое ушло)
+    res.status(200).json({
+      ok: data.ok,
+      result: data.result,
+      text: data.result ? data.result.text : "",
+      error: data.description || "",
+    });
   } catch (err) {
     res.status(500).json({ error: "Telegram API error", details: err.message });
   }
