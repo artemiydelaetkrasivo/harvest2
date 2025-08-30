@@ -182,7 +182,7 @@ document.getElementById('contactForm').addEventListener('submit', async function
   var text = `Зворотній зв'язок\nІм'я: ${name}\nEmail: ${email}\nПовідомлення: ${message}`;
 
   try {
-    const response = await fetch('/api/send_to_telegram', {
+    const response = await fetch('send_to_telegram', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text })
@@ -204,3 +204,4 @@ document.getElementById('contactForm').addEventListener('submit', async function
   }, 6000);
 });
 });
+
