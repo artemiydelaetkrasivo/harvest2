@@ -171,15 +171,36 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     msgDiv.textContent = '';
   }, 6000);
 
-  // Отправка формы на сервер
-  fetch('send_to_telegram.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'text=' + encodeURIComponent(
-      'Чшфвтуіі\n' +
-      'Ім\'я: ' + name + '\n' +
-      'Email: ' + email + '\n' +
-      'Повідомлення: ' + message
-    )
-  });
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var name = document.getElementById('name').value.trim();
+  var email = document.getElementById('email').value.trim();
+  var message = document.getElementById('message').value.trim();
+  var msgDiv = document.getElementById('form-message');
+
+  // Собираем текст
+  var text = `Зворотній зв'язок\nІм'я: ${name}\nEmail: ${email}\nПовідомлення: ${message}`;
+
+  try {
+    const response = await fetch('/api/send_to_telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const result = await response.json();
+    if (result.ok) {
+      msgDiv.textContent = "Ваше повідомлення надіслано: " + result.text;
+    } else {
+      msgDiv.textContent = "Помилка: " + (result.error || "Не вдалося надіслати повідомлення.");
+    }
+  } catch (err) {
+    msgDiv.textContent = "Помилка відправки: " + err.message;
+  }
+  msgDiv.classList.add('show');
+  this.reset();
+  setTimeout(function() {
+    msgDiv.classList.remove('show');
+    msgDiv.textContent = '';
+  }, 6000);
+});
 });
